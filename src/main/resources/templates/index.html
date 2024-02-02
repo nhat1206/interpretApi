@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservice UI</title>
+</head>
+<body>
+
+<!-- Code Interpreter View -->
+<div>
+    <h2>Code Interpreter</h2>
+    <textarea id="codeInput" rows="5" cols="50"></textarea>
+    <button onclick="interpretCode()">Interpret Code</button>
+    <p id="interpretedCode"></p>
+</div>
+
+<!-- Text Translator View -->
+<div>
+    <h2>Text Translator</h2>
+    <textarea id="textInput" rows="5" cols="50"></textarea>
+    <label for="targetLanguage">Target Language:</label>
+    <input type="text" id="targetLanguage" name="targetLanguage" value="de">
+    <button onclick="translateText()">Translate Text</button>
+    <p id="translatedText"></p>
+</div>
+
+<script>
+    function interpretCode() {
+        var codeInput = document.getElementById("codeInput").value;
+        fetch('/interpreter/interpret', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(codeInput),
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("interpretedCode").innerText = data;
+        });
+    }
+
+    function translateText() {
+        var textInput = document.getElementById("textInput").value;
+        var targetLanguage = document.getElementById("targetLanguage").value;
+        fetch('/translator/translate?targetLanguage=' + targetLanguage, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(textInput),
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("translatedText").innerText = data;
+        });
+    }
+</script>
+
+</body>
+</html>
